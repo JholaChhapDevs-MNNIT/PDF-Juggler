@@ -12,4 +12,7 @@ object PrefsResources {
     const val CUSTOM_COLOR = "custom_color"
     const val PALETTE_STYLE = "palette_style"
     const val CONTRAST_LEVEL = "contrast_level"
+
+    // app settings
+    const val IS_LOGGED_IN = "is_logged_in"
 }
