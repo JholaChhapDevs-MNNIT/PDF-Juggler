@@ -32,7 +32,6 @@ import com.kanhaji.basics.screens.settings.components.ColorPickerDialog
 import com.kanhaji.basics.screens.settings.components.ThemeSelectionDialog
 import com.kanhaji.basics.screens.settings.components.colorToHex
 import com.kanhaji.basics.theme.ThemeManager
-import com.mwi.frontend.util.AppSettingsItems
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,10 +51,10 @@ fun SettingsComponent() {
             header = "Themes",
             items = settingItems
         ),
-        Group(
-            header = "App Settings",
-            items = AppSettingsItems.get(context)
-        )
+//        Group(
+//            header = "App Settings",
+//            items = AppSettingsItems.get(context)
+//        )
     )
 
 

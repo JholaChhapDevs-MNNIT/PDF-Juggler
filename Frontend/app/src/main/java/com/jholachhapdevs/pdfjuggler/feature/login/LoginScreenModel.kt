@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.jholachhapdevs.pdfjuggler.feature.login.entity.OtpResponse
 import com.kanhaji.basics.networking.httpClient
+import com.kanhaji.basics.util.Env
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -50,7 +51,7 @@ class LoginScreenModel : ScreenModel {
         onFailure: (String) -> Unit = {},
     ) {
         try {
-            val url = "https://2factor.in/API/V1/api_key/SMS/9999999999/AUTOGEN"
+            val url = "https://2factor.in/API/V1/${Env.otpApiKey}/SMS/$phoneNumber/AUTOGEN2"
             println("Sending OTP request to URL: $url")
             val response = httpClient.get(url) {
                 contentType(ContentType.Application.Json)
