@@ -38,4 +38,7 @@ class FlashCardService(
         }
         flashCardRepository.deleteById(id)
     }
+    fun getFlashCardsBySetId(setId: String): List<FlashCard> {
+        return flashCardRepository.findBySetId(setId)
+    }
 }

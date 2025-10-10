@@ -44,4 +44,8 @@ class FlashCardController(
         flashCardService.deleteFlashCard(id)
         return ResponseEntity.noContent().build()
     }
+    @GetMapping("/sets/{setId}")
+    fun getAllFlashCardsBySetId(@PathVariable setId: String): ResponseEntity<List<FlashCard>> {
+        return ResponseEntity.ok(flashCardService.getFlashCardsBySetId(setId))
+    }
 }
