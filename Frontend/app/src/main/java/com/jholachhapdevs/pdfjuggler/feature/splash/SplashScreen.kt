@@ -1,7 +1,6 @@
 package com.jholachhapdevs.pdfjuggler.feature.splash
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +17,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.kanhaji.basics.datastore.PrefsManager
 import com.kanhaji.basics.datastore.PrefsResources
-import com.jholachhapdevs.pdfjuggler.feature.home.HomeScreen
+import com.jholachhapdevs.pdfjuggler.feature.home.ui.HomeScreen
 import com.jholachhapdevs.pdfjuggler.feature.login.LoginScreen
 import kotlinx.coroutines.delay
 

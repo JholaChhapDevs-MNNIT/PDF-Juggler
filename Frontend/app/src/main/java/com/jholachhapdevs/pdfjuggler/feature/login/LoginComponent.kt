@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,7 +34,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.platform.LocalFocusManager
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.jholachhapdevs.pdfjuggler.feature.home.HomeScreen
+import com.jholachhapdevs.pdfjuggler.feature.home.ui.HomeScreen
 import com.jholachhapdevs.pdfjuggler.feature.login.component.OtpInput
 import com.jholachhapdevs.pdfjuggler.feature.login.component.OtpStatus
 import com.kanhaji.basics.composables.KButton
