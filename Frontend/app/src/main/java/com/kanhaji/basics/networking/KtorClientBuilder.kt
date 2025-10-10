@@ -28,16 +28,19 @@ fun buildHttpClient(engine: HttpClientEngine): HttpClient {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
+                    // Keep logs lightweight. Avoid logging large request/response bodies.
                     println(message)
                 }
             }
-            level = LogLevel.BODY
+            // HEADERS prevents logging request/response bodies (which may contain large file bytes)
+            level = LogLevel.HEADERS
+            sanitizeHeader { header -> header.equals(HttpHeaders.Authorization, ignoreCase = true) }
         }
 
         install(HttpTimeout) {
-            requestTimeoutMillis = 6000
-            connectTimeoutMillis = 3000
-            socketTimeoutMillis = 6000
+            requestTimeoutMillis = 60000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 60000
         }
 
         defaultRequest {

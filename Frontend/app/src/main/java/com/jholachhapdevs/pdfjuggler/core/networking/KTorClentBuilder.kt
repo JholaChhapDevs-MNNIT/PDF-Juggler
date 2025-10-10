@@ -26,7 +26,8 @@ fun buildHttpClient(engine: HttpClientEngine): HttpClient {
                     println(message)
                 }
             }
-            level = LogLevel.BODY
+            // Avoid logging full request/response bodies (can include large file bytes)
+            level = LogLevel.INFO
         }
 
         install(HttpTimeout) {

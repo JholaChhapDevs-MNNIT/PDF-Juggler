@@ -1,4 +1,3 @@
-package com.jholachhapdevs.pdfjuggler.feature.ai.domain.usecase
 
 import com.jholachhapdevs.pdfjuggler.core.util.Resources
 import com.jholachhapdevs.pdfjuggler.feature.ai.data.remote.GeminiRemoteDataSource

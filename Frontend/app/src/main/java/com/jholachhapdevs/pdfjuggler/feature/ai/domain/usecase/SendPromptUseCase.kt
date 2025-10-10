@@ -14,24 +14,18 @@ class SendPromptUseCase(
     private val assistantName: String = "Ringmaster"
 ) {
     suspend operator fun invoke(messages: List<ChatMessage>): ChatMessage {
-        // Persona preface (kept concise and circus-themed)
-        val persona = """
-            You are $assistantName, a succinct, friendly PDF assistant with a circus theme.
-            Always introduce yourself as "$assistantName" when greeting or when asked your name.
-            Keep responses concise and focused on the user's PDF and request context.
-        """.trimIndent()
+        // Send only the user's provided messages; no persona preface.
+        val limited = messages.takeLast(20)
+        val response: GeminiResponse = remote.sendChat(modelName, limited)
 
-        // Ensure persona is always included within the last 20 messages
-        val preface = ChatMessage(role = "user", text = persona)
-        val limited = messages.takeLast(19)
-        val response: GeminiResponse = remote.sendChat(modelName, listOf(preface) + limited)
+        // Collect any text across all candidates/parts; join if multiple chunks
+        val aggregated = response.candidates
+            ?.flatMap { it.content?.parts.orEmpty() }
+            ?.mapNotNull { it.text }
+            ?.filter { it.isNotBlank() }
+            ?.joinToString(separator = "\n\n")
 
-        val text = response.candidates
-            ?.firstOrNull()
-            ?.content
-            ?.parts
-            ?.firstOrNull()
-            ?.text ?: "No response"
+        val text = aggregated ?: "I couldn't get a response from the model. Please try again."
         return ChatMessage(role = "model", text = text)
     }
 }

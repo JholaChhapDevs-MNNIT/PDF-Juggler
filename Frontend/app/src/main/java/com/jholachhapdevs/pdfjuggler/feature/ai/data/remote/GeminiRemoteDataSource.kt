@@ -1,6 +1,6 @@
 package com.jholachhapdevs.pdfjuggler.feature.ai.data.remote
 
-import com.jholachhapdevs.pdfjuggler.core.networking.httpClient
+import com.kanhaji.basics.networking.httpClient
 import com.jholachhapdevs.pdfjuggler.feature.ai.data.model.GeminiContent
 import com.jholachhapdevs.pdfjuggler.feature.ai.data.model.GeminiFile
 import com.jholachhapdevs.pdfjuggler.feature.ai.data.model.GeminiFileData
