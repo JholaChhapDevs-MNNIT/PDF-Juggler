@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +38,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.jholachhapdevs.pdfjuggler.feature.home.HomeScreen
 import com.jholachhapdevs.pdfjuggler.feature.login.component.OtpInput
 import com.jholachhapdevs.pdfjuggler.feature.login.component.OtpStatus
+import com.kanhaji.basics.composables.KButton
+import com.kanhaji.basics.composables.KTextButton
 import com.kanhaji.basics.datastore.PrefsManager
 import com.kanhaji.basics.datastore.PrefsResources
 import kotlinx.coroutines.delay
@@ -162,7 +162,7 @@ fun LoginComponent(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    OutlinedButton(
+                    KButton(
                         onClick = { sendOtp() },
                         enabled = !isSending && isValidPhone(phone),
                         modifier = Modifier.fillMaxWidth()
@@ -228,7 +228,7 @@ fun LoginComponent(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { showOtpDialog = false }) {
+                KTextButton(onClick = { showOtpDialog = false }) {
                     Text("Close")
                 }
             }

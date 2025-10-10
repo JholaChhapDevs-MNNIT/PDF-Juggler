@@ -12,11 +12,14 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.jholachhapdevs.pdfjuggler.core.util.FileType
 import com.jholachhapdevs.pdfjuggler.core.util.openFilePicker
 import com.jholachhapdevs.pdfjuggler.feature.home.domain.usecase.ExtractKeyTextUseCase
+import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.model.Flashcard
+import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.usecase.GenerateFlashcardsFromPdfUseCase
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
 
 class HomeScreenModel(
-    private val extractKeyText: ExtractKeyTextUseCase = ExtractKeyTextUseCase()
+    private val extractKeyText: ExtractKeyTextUseCase = ExtractKeyTextUseCase(),
+    private val generateFlashcards: GenerateFlashcardsFromPdfUseCase = GenerateFlashcardsFromPdfUseCase()
 ) : ScreenModel {
 
     var selectedPdfUri: String? by mutableStateOf(null)
@@ -29,6 +32,14 @@ class HomeScreenModel(
     var resultText by mutableStateOf("")
         private set
     var error by mutableStateOf<String?>(null)
+        private set
+
+    // Flashcards generation state
+    var isGeneratingCards by mutableStateOf(false)
+        private set
+    var cards: List<Flashcard> by mutableStateOf(emptyList())
+        private set
+    var cardsError by mutableStateOf<String?>(null)
         private set
 
     fun pickPdf(context: Context) {
@@ -61,6 +72,28 @@ class HomeScreenModel(
                 error = t.message ?: "Extraction failed"
             } finally {
                 isExtracting = false
+            }
+        }
+    }
+
+    fun generateFlashcards(context: Context, maxCards: Int = 20) {
+        val uri = selectedPdfUri ?: return
+        if (isGeneratingCards) return
+        screenModelScope.launch {
+            isGeneratingCards = true
+            cardsError = null
+            try {
+                val result = generateFlashcards(
+                    context = context,
+                    contentUri = Uri.parse(uri),
+                    displayName = selectedPdfName ?: "document.pdf",
+                    maxCards = maxCards
+                )
+                cards = result
+            } catch (t: Throwable) {
+                cardsError = t.message ?: "Failed to generate flashcards"
+            } finally {
+                isGeneratingCards = false
             }
         }
     }
