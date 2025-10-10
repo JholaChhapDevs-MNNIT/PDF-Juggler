@@ -1,6 +1,5 @@
 package com.jholachhapdevs.pdfjuggler.service
 
-
 import com.jholachhapdevs.pdfjuggler.dto.auth.AuthRequest
 import com.jholachhapdevs.pdfjuggler.dto.auth.AuthResponse
 import com.jholachhapdevs.pdfjuggler.dto.auth.RegisterRequest
@@ -25,19 +24,22 @@ class AuthService(
     private val authenticationManager: AuthenticationManager
 ) {
 
+    /**
+     * Registers a new user with username, password, and phone number
+     */
     @Transactional
     fun register(@Valid request: RegisterRequest): AuthResponse {
         validateRegistrationData(request)
 
         val user = User(
             uname = request.username,
-            pwd = passwordEncoder.encode(request.password)
+            pwd = passwordEncoder.encode(request.password),
+            phone = request.phone
         )
 
         val savedUser = userRepository.save(user)
 
         val token = jwtTokenProvider.createToken(savedUser.username, savedUser.authorities)
-
         val expirationDate = jwtTokenProvider.extractExpiration(token)
         val tokenExpiresAt = expirationDate.toInstant()
             .atZone(ZoneId.systemDefault())
@@ -45,22 +47,33 @@ class AuthService(
 
         return AuthResponse(
             token = token,
-            userId = savedUser.id.toString(), // assuming your User id is ObjectId
+            userId = savedUser.id.toString(),
             username = savedUser.username,
             tokenExpiresAt = tokenExpiresAt
         )
     }
 
+    /**
+     * Ensures both username and phone are unique
+     */
     private fun validateRegistrationData(request: RegisterRequest) {
         if (userRepository.existsByUname(request.username)) {
             throw IllegalArgumentException("Username already exists")
         }
+
+        if (userRepository.existsByPhone(request.phone)) {
+            throw IllegalArgumentException("Phone number already exists")
+        }
     }
 
+    /**
+     * Login using either username or phone number + password
+     */
     @Transactional(readOnly = true)
     fun login(@Valid request: AuthRequest): AuthResponse {
         try {
-            val user = findUserByUsername(request.loginIdentifier)
+            val user = findUserByLoginIdentifier(request.loginIdentifier)
+
             val authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(user.username, request.password)
             )
@@ -79,13 +92,17 @@ class AuthService(
                 tokenExpiresAt = tokenExpiresAt
             )
         } catch (ex: BadCredentialsException) {
-            throw BadCredentialsException("Invalid username or password")
+            throw BadCredentialsException("Invalid username, phone, or password")
         }
     }
 
-    private fun findUserByUsername(username: String): User =
-        userRepository.findByUname(username)
-            ?: throw IllegalArgumentException("User not found with provided username")
+    /**
+     * Finds a user by username or phone number
+     */
+    private fun findUserByLoginIdentifier(identifier: String): User =
+        userRepository.findByUname(identifier)
+            ?: userRepository.findByPhone(identifier)
+            ?: throw IllegalArgumentException("User not found with provided username or phone number")
 
     fun validateToken(token: String): Boolean {
         return try {
@@ -98,5 +115,6 @@ class AuthService(
     @Transactional(readOnly = true)
     fun existsByUsername(username: String): Boolean = userRepository.existsByUname(username)
 
-
+    @Transactional(readOnly = true)
+    fun existsByPhone(phone: String): Boolean = userRepository.existsByPhone(phone)
 }

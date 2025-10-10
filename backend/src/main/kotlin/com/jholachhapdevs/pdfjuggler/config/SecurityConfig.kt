@@ -40,7 +40,7 @@ class SecurityConfig(
             .cors { it.configurationSource(corsConfigurationSource()) }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+                it.requestMatchers("/api/auth/**", "/api/flashcard/**").permitAll()
                 it.anyRequest().authenticated()
             }
 

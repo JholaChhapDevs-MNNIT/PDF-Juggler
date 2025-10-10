@@ -1,6 +1,5 @@
 package com.jholachhapdevs.pdfjuggler.dto.auth
 
-
 import jakarta.validation.constraints.*
 
 data class RegisterRequest(
@@ -21,9 +20,10 @@ data class RegisterRequest(
     )
     val password: String,
 
-//    @field:NotBlank(message = "Password confirmation is required")
-//    val passwordConfirmation: String
-) {
-//    @AssertTrue(message = "Password confirmation must match password")
-//    fun isPasswordConfirmationValid(): Boolean = password == passwordConfirmation
-}
+    @field:NotBlank(message = "Phone number is required")
+    @field:Pattern(
+        regexp = "^[6-9]\\d{9}$",
+        message = "Phone number must be a valid 10-digit Indian number starting with 6, 7, 8, or 9"
+    )
+    val phone: String
+)

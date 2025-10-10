@@ -3,6 +3,7 @@ package com.jholachhapdevs.pdfjuggler.entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -15,7 +16,9 @@ data class User(
     val uname: String,
 
     @get:JsonIgnore
-    val pwd: String
+    val pwd: String,
+    @Indexed(unique = true)
+    val phone: String
 ) : UserDetails {
 
     // Implement the UserDetails methods manually, delegating to uname/pwd
