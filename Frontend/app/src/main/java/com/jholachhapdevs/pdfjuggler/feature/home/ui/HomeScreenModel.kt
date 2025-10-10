@@ -16,10 +16,13 @@ import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.model.Flashcard
 import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.usecase.GenerateFlashcardsFromPdfUseCase
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.jholachhapdevs.pdfjuggler.feature.home.data.model.FlashcardSet
+import com.jholachhapdevs.pdfjuggler.feature.home.domain.usecase.GetSetTitleUseCase
 
 class HomeScreenModel(
     private val extractKeyText: ExtractKeyTextUseCase = ExtractKeyTextUseCase(),
-    private val generateFlashcards: GenerateFlashcardsFromPdfUseCase = GenerateFlashcardsFromPdfUseCase()
+    private val generateFlashcards: GenerateFlashcardsFromPdfUseCase = GenerateFlashcardsFromPdfUseCase(),
+    private val getSetTitleUseCase: GetSetTitleUseCase = GetSetTitleUseCase()
 ) : ScreenModel {
 
     var selectedPdfUri: String? by mutableStateOf(null)
@@ -85,7 +88,7 @@ class HomeScreenModel(
             try {
                 val result = generateFlashcards(
                     context = context,
-                    contentUri = Uri.parse(uri),
+                    contentUri = uri.toUri(),
                     displayName = selectedPdfName ?: "document.pdf",
                     maxCards = maxCards
                 )
@@ -112,5 +115,21 @@ class HomeScreenModel(
             cursor?.close()
         }
         return name
+    }
+
+    fun getPdfInsights(context: Context, onResult: (FlashcardSet?) -> Unit, onError: (String) -> Unit) {
+        val uri = selectedPdfUri ?: return
+        screenModelScope.launch {
+            try {
+                val insights = getSetTitleUseCase(
+                    context = context,
+                    contentUri = uri.toUri(),
+                    displayName = selectedPdfName ?: "document.pdf"
+                )
+                onResult(insights)
+            } catch (t: Throwable) {
+                onError(t.message ?: "Failed to get PDF insights")
+            }
+        }
     }
 }

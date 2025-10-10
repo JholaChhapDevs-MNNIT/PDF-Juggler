@@ -10,7 +10,6 @@ import com.kanhaji.basics.util.Env
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 
 class FlashcardsRepository(
     private val remote: GeminiRemoteDataSource = GeminiRemoteDataSource(apiKey = Env.geminiApiKey),
@@ -33,14 +32,37 @@ class FlashcardsRepository(
             bytes = bytes
         )
 
+//        val systemPrompt = """
+//            Read the attached PDF and create up to $maxCards succinct flashcards.
+//            Return ONLY a compact JSON array. Each item must have fields: "front" and "back".
+//            Example:
+//            [
+//              {"front": "What is photosynthesis?", "back": "Process where plants convert light into chemical energy."}
+//            ]
+//        """.trimIndent()
+
         val systemPrompt = """
-            Read the attached PDF and create up to $maxCards succinct flashcards.
-            Return ONLY a compact JSON array. Each item must have fields: "front" and "back".
-            Example:
-            [
-              {"front": "What is photosynthesis?", "back": "Process where plants convert light into chemical energy."}
-            ]
+            You are an AI flashcard generator. Your task is to read the attached PDF content and create **up to $maxCards flashcards**.
+            
+            Requirements:
+            1. Each flashcard must be a JSON object with exactly two fields:
+               - "front": A concise question, prompt, or keyword phrase.
+               - "back": The answer, **always only one or two words**. Do NOT write full sentences.
+            2. The questions should be clear, direct, and testable. Avoid vague or long questions.
+            3. Return a **JSON array only**, no extra commentary, text, or explanations outside the JSON.
+            4. Ensure valid JSON formatting: no trailing commas, correct quotes, no escape errors.
+            5. Example output (strict format):
+               [
+                 {"front": "Capital of France?", "back": "Paris"},
+                 {"front": "H2O is known as?", "back": "Water"},
+                 {"front": "Atomic number of Hydrogen?", "back": "1"}
+               ]
+            6. Generate answers that are **precise, factual, and one or two words**.
+            7. Avoid including definitions, sentences, or any explanatory text in the "back" field.
+            
+            Instructions: Only return the JSON array of flashcards. Do not add any text before or after the array.
         """.trimIndent()
+
 
         val modelMessage = send(
             listOf(

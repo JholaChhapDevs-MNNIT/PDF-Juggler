@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -144,6 +148,7 @@ fun HomeComponent(
                         // Maintain a local deck so swipes can reorder cards without mutating screenModel state
                         var deck by remember(screenModel.cards) { mutableStateOf(screenModel.cards) }
                         LaunchedEffect(screenModel.cards) { deck = screenModel.cards }
+                        
 
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
@@ -160,26 +165,28 @@ fun HomeComponent(
                                     Color(0xffce93d8)
                                 )
                             }
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.BottomCenter
+                            LazyColumn(
+                                modifier = Modifier.fillMaxWidth().weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                deck.forEachIndexed { idx, card ->
-                                    key(card) {
-                                        val cardColor = palette[abs((card.front + "|" + card.back).hashCode()) % palette.size]
-                                        SwipeableCard(
-                                            order = idx,
-                                            totalCount = deck.size,
-                                            backgroundColor = cardColor,
-                                            title = "Question",
-                                            text = card.front,
-                                            backTitle = "Answer",
-                                            backText = card.back,
-                                            canFlip = idx == deck.lastIndex
-                                        ) {
-                                            // Move this specific card to the back of the stack (drawn underneath): place at start of list
-                                            deck = listOf(card) + deck.filterNot { it == card }
-                                        }
+                                items(
+                                    items = deck,
+                                    key = { it.front + "|" + it.back }
+                                ) { card ->
+                                    val cardColor = palette[abs((card.front + "|" + card.back).hashCode()) % palette.size]
+                                    SwipeableCard(
+                                        order = 0,
+                                        totalCount = 0,
+                                        backgroundColor = cardColor,
+                                        title = "Question",
+                                        text = card.front,
+                                        backTitle = "Answer",
+                                        backText = card.back,
+                                        canFlip = true,
+                                        stacked = false
+                                    ) {
+                                        // In a list, move swiped card to the end of the list
+                                        deck = deck.filterNot { it == card } + card
                                     }
                                 }
                             }
