@@ -1,5 +1,6 @@
 package com.jholachhapdevs.pdfjuggler
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,18 +18,20 @@ import com.jholachhapdevs.pdfjuggler.core.ui.theme.PDFJugglerTheme
 import com.jholachhapdevs.pdfjuggler.feature.login.LoginScreen
 import com.jholachhapdevs.pdfjuggler.feature.splash.SplashScreen
 import com.kanhaji.basics.datastore.PrefsManager
+import com.kanhaji.basics.theme.BasicKolorTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         PrefsManager.init(this)
         setContent {
-            PDFJugglerTheme {
+            BasicKolorTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Navigator(SplashScreen) { navigator ->

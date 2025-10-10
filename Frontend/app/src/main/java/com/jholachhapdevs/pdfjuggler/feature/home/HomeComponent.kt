@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.jholachhapdevs.pdfjuggler.core.components.KAppBar
 
 @Composable
 fun HomeComponent(
@@ -19,22 +21,28 @@ fun HomeComponent(
 ) {
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Button(onClick = { screenModel.pickPdf(context) }) {
-            Text("Pick PDF")
-        }
+    Scaffold(
+        topBar = { KAppBar() }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Button(onClick = { screenModel.pickPdf(context) }) {
+                Text("Pick PDF")
+            }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        screenModel.selectedPdfUri?.let { uri ->
-            Text(
-                text = "Selected: $uri",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            screenModel.selectedPdfUri?.let { uri ->
+                Text(
+                    text = "Selected: $uri",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
+
 }
