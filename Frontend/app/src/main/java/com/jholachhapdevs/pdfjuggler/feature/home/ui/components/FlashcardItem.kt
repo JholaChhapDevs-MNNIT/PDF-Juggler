@@ -2,34 +2,34 @@ package com.jholachhapdevs.pdfjuggler.feature.home.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import com.jholachhapdevs.pdfjuggler.feature.home.domain.model.FlashcardSet
+import com.jholachhapdevs.pdfjuggler.feature.home.data.model.FlashcardSet
 
 @Composable
-fun FlashcardItem(set: FlashcardSet) {
-    Surface(
+fun FlashcardItem(
+    set: FlashcardSet,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        tonalElevation = 2.dp,
-        modifier = Modifier.fillMaxWidth()
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = modifier
     ) {
         Row(
             Modifier
@@ -37,15 +37,6 @@ fun FlashcardItem(set: FlashcardSet) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-//            AsyncImage(
-//                model = set.imageUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .size(64.dp)
-//                    .clip(MaterialTheme.shapes.medium)
-//            )
-            Spacer(modifier = Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(
                     text = set.title,

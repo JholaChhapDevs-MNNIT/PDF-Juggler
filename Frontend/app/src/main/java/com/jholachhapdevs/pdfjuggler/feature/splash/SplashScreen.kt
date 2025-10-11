@@ -35,9 +35,9 @@ object SplashScreen : Screen {
             delay(1000)
             val isLoggedIn = PrefsManager.getBoolean(PrefsResources.IS_LOGGED_IN) ?: false
             if (isLoggedIn) {
-                navigator.replaceAll(HomeScreen)
+                navigator.replace(HomeScreen)
             } else {
-                navigator.replaceAll(LoginScreen)
+                navigator.replace(LoginScreen)
             }
         }
 

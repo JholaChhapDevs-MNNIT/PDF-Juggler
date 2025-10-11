@@ -16,7 +16,7 @@ import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.model.Flashcard
 import com.jholachhapdevs.pdfjuggler.feature.flashcards.domain.usecase.GenerateFlashcardsFromPdfUseCase
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
-import com.jholachhapdevs.pdfjuggler.feature.home.data.model.FlashcardSet
+import com.jholachhapdevs.pdfjuggler.feature.home.data.model.PdfInsights
 import com.jholachhapdevs.pdfjuggler.feature.home.domain.usecase.GetSetTitleUseCase
 
 class HomeScreenModel(
@@ -45,6 +45,7 @@ class HomeScreenModel(
     var cardsError by mutableStateOf<String?>(null)
         private set
 
+
     fun pickPdf(context: Context) {
         screenModelScope.launch {
             resultText = ""
@@ -58,7 +59,12 @@ class HomeScreenModel(
         }
     }
 
-    fun extractKeyText(context: Context) {
+    // Kotlin
+    fun extractKeyText(
+        context: Context,
+        onSuccess: (String) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
         val uri = selectedPdfUri ?: return
         if (isExtracting) return
         screenModelScope.launch {
@@ -70,15 +76,23 @@ class HomeScreenModel(
                     contentUri = uri.toUri(),
                     displayName = selectedPdfName ?: "document.pdf"
                 )
-                resultText = res.text
+                onSuccess(res.text)
             } catch (t: Throwable) {
-                error = t.message ?: "Extraction failed"
+                onFailure(t.message ?: "Extraction failed")
             } finally {
                 isExtracting = false
             }
         }
     }
 
+    // Backward‑compatible helper that updates internal state.
+    fun extractKeyText(context: Context) {
+        extractKeyText(
+            context = context,
+            onSuccess = { text -> resultText = text },
+            onFailure = { msg -> error = msg }
+        )
+    }
     fun generateFlashcards(context: Context, maxCards: Int = 20) {
         val uri = selectedPdfUri ?: return
         if (isGeneratingCards) return
@@ -101,6 +115,7 @@ class HomeScreenModel(
         }
     }
 
+
     private fun getDisplayName(context: Context, uri: Uri): String? {
         var name: String? = null
         var cursor: Cursor? = null
@@ -117,7 +132,7 @@ class HomeScreenModel(
         return name
     }
 
-    fun getPdfInsights(context: Context, onResult: (FlashcardSet?) -> Unit, onError: (String) -> Unit) {
+    fun getPdfInsights(context: Context, onResult: (PdfInsights) -> Unit, onError: (String) -> Unit) {
         val uri = selectedPdfUri ?: return
         screenModelScope.launch {
             try {

@@ -16,8 +16,8 @@ class GetSetTitleUseCase(
         val res = repo.getSetTitle(context, contentUri, displayName)
         return PdfInsights(
             title = res.title,
-            summary = res.summary,
-            keyPoints = res.keyPoints
+            summary = "",
+            keyPoints = emptyList()
         )
     }
 }
